@@ -28,9 +28,23 @@ int main(int argc, char** argv)
         {
             std::unique_ptr<ModuleInstance> module((*function)());
 
-            std::cout << module->GetName() << std::endl;
+            try
+            {
+                if (module->IsInterface<Example>())
+                    std::cout << "Is Example interface!" << std::endl;
+                else
+                    std::cout << "Is unknown interface!" << std::endl;
 
-            std::cout << module->GetInterface<Example>()->GetHey() << std::endl;
+                std::cout << module->GetTypeId() << std::endl;
+
+                std::cout << module->GetName() << std::endl;
+
+                std::cout << module->GetInterface<Example>()->GetHey() << std::endl;
+            }
+            catch (BadInterfaceCastException& e)
+            {
+                std::cout << e.what() << std::endl;
+            }
         }
         else
             std::cout << "function not found!";

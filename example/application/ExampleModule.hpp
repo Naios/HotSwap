@@ -4,13 +4,18 @@
 
 #include "ModuleInstance.hpp"
 
-class Example
+class Example : public ModuleInterface
 {
 public:
     virtual std::string GetHey()
     {
         return "hey";
     }
+};
+
+class BadExample : public ModuleInterface
+{
+public:
 };
 
 #endif // ExampleModule_hpp_
