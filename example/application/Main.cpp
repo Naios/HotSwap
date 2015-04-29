@@ -9,7 +9,7 @@
 
 #include <windows.h>
 
-typedef ExampleModule*(*CreateModule)();
+typedef Module*(*CreateModule)();
 
 int main(int argc, char** argv)
 {
@@ -23,7 +23,13 @@ int main(int argc, char** argv)
         function = (CreateModule) GetProcAddress(moduleHandle, "CreateModule");
 
         if (function != NULL)
-            std::cout << (*function)()->test();
+        {
+            std::unique_ptr<Module> module((*function)());
+
+            std::cout << module->GetName() << std::endl;
+
+            std::cout << module->GetInterface<Example>()->GetHey() << std::endl;
+        }
         else
             std::cout << "function not found!";
 

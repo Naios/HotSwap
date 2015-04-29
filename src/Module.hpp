@@ -3,12 +3,33 @@
 #define Module_hpp_
 
 #include <string>
+#include <memory>
 
-template <class T>
 class Module
 {
+    std::shared_ptr<void> _ptr;
+
+    std::string const _name, _type, _version;
+
 public:
-    std::string const& GetName() const;
+    Module(std::string const& type, std::string const& name, std::string const& version, void* ptr)
+        : _ptr(ptr), _name(name), _type(type), _version(version) { }
+
+    std::string const& GetName() const
+    {
+        return _name;
+    }
+
+    std::string const& GetType() const
+    {
+        return _type;
+    }
+
+    template <class T>
+    T* GetInterface() const
+    {
+        return static_cast<T*>(_ptr.get());
+    }
 
     std::string test()
     {

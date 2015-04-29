@@ -4,10 +4,13 @@
 
 #include "Module.hpp"
 
-struct Example
+class Example
 {
+public:
+    virtual std::string GetHey()
+    {
+        return "hey";
+    }
 };
-
-typedef Module<Example> ExampleModule;
 
 #endif ExampleModule_hpp_
