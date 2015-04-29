@@ -2,7 +2,7 @@
 #ifndef ExampleModule_hpp_
 #define ExampleModule_hpp_
 
-#include "Module.hpp"
+#include "ModuleInstance.hpp"
 
 class Example
 {
@@ -13,4 +13,4 @@ public:
     }
 };
 
-#endif ExampleModule_hpp_
+#endif // ExampleModule_hpp_

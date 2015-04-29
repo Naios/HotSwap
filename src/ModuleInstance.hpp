@@ -5,14 +5,14 @@
 #include <string>
 #include <memory>
 
-class Module
+class ModuleInstance
 {
     std::shared_ptr<void> _ptr;
 
     std::string const _name, _type, _version;
 
 public:
-    Module(std::string const& type, std::string const& name, std::string const& version, void* ptr)
+    ModuleInstance(std::string const& type, std::string const& name, std::string const& version, void* ptr)
         : _ptr(ptr), _name(name), _type(type), _version(version) { }
 
     std::string const& GetName() const
@@ -37,4 +37,4 @@ public:
     }
 };
 
-#endif Module_hpp_
+#endif // Module_hpp_

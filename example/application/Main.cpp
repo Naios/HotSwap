@@ -3,16 +3,18 @@
 
 #include <boost/filesystem.hpp>
 
-#include "Module.hpp"
-
+#include "ModuleInstance.hpp"
 #include "ExampleModule.hpp"
+#include "ExampleSingleton.hpp"
 
 #include <windows.h>
 
-typedef Module*(*CreateModule)();
+typedef ModuleInstance*(*CreateModule)();
 
 int main(int argc, char** argv)
 {
+    Log::instance().count();
+
     CreateModule function;
     BOOL fFreeResult;
 
@@ -24,7 +26,7 @@ int main(int argc, char** argv)
 
         if (function != NULL)
         {
-            std::unique_ptr<Module> module((*function)());
+            std::unique_ptr<ModuleInstance> module((*function)());
 
             std::cout << module->GetName() << std::endl;
 
