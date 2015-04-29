@@ -6,18 +6,24 @@
 #include <memory>
 #include <exception>
 #include <typeinfo>
+#include <type_traits>
 
 #include <boost/optional.hpp>
 
-class BadInterfaceCastException: public std::exception
-{
-public:
-    virtual const char* what() const throw()
-    {
-        return "Tried to cast to wrong interface!";
-    }
-};
+#if defined(_MSC_VER)
+    //  Microsoft
+    #define MODULE_EXPORT __declspec(dllexport)
+#elif defined(_GCC)
+    //  GCC
+    #define MODULE_EXPORT __attribute__((visibility("default")))
+#else
+    //  do nothing and hope for the best?
+    #define MODULE_EXPORT
+    #pragma warning Unknown dynamic link import/export semantics.
+#endif
 
+// Module interface base class
+// Ensures that there are runtime infos generated for our child classes.
 class ModuleInterface
 {
 public:
@@ -53,25 +59,25 @@ public:
 
     // Returns true if the interface is of type T
     template <class T>
-    bool IsInterface() const
+    bool IsInstanceOf() const
     {
+        static_assert(std::is_convertible<T, ModuleInterface>::value,
+            "Parameter T needs to be child class of ModuleInterface!");
         return (dynamic_cast<T*>(_ptr.get()) != nullptr);
     }
 
-    // Throws BadInterfaceException on failure.
+    // Throws std::bad_cast exception on bad casts.
     template <class T>
     T* GetInterface() const
     {
+        static_assert(std::is_convertible<T, ModuleInterface>::value,
+            "Can't cast to interfaces which are not a child of ModuleInterface!");
+
         T* ptr = dynamic_cast<T*>(_ptr.get());
         if (ptr == nullptr)
-            throw BadInterfaceCastException();
+            throw std::bad_cast("Tried to cast to wrong interface!");
         else
             return ptr;
-    }
-
-    std::string test()
-    {
-        return "hey";
     }
 };
 

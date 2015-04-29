@@ -13,6 +13,8 @@ typedef ModuleInstance*(*CreateModule)();
 
 int main(int argc, char** argv)
 {
+    boost::filesystem::path p;
+
     Log::instance().count();
 
     CreateModule function;
@@ -30,7 +32,7 @@ int main(int argc, char** argv)
 
             try
             {
-                if (module->IsInterface<Example>())
+                if (module->IsInstanceOf<Example>())
                     std::cout << "Is Example interface!" << std::endl;
                 else
                     std::cout << "Is unknown interface!" << std::endl;
@@ -41,7 +43,7 @@ int main(int argc, char** argv)
 
                 std::cout << module->GetInterface<Example>()->GetHey() << std::endl;
             }
-            catch (BadInterfaceCastException& e)
+            catch (std::bad_cast& e)
             {
                 std::cout << e.what() << std::endl;
             }

@@ -15,7 +15,7 @@ class OtherExample : public Example
 
 extern "C"
 {
-    __declspec(dllexport) ModuleInstance* __cdecl CreateModule()
+    MODULE_EXPORT ModuleInstance* CreateModule()
     {
         return new ModuleInstance("TC:Script", "Some scripts", "", new OtherExample());
     }
