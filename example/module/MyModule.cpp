@@ -17,6 +17,6 @@ extern "C"
 {
     MODULE_EXPORT ModuleInstance* CreateModule()
     {
-        return new ModuleInstance("TC:Script", "Some scripts", "", new OtherExample());
+        return new ModuleInstance(new OtherExample(), "TC:Script", "Some scripts", "");
     }
 }

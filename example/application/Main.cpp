@@ -6,27 +6,15 @@
 #include "ModuleInstance.hpp"
 #include "ExampleModule.hpp"
 #include "ExampleSingleton.hpp"
-
-#include <windows.h>
-
-typedef ModuleInstance*(*CreateModule)();
+#include "ModulePlatformUtils.hpp"
 
 int main(int argc, char** argv)
 {
-    boost::filesystem::path p;
+    boost::filesystem::path module_path("MyModule.dll");
 
-    Log::instance().count();
-
-    CreateModule function;
-    BOOL fFreeResult;
-
-    HINSTANCE moduleHandle = LoadLibrary("MyModule.dll");
-
-    if (moduleHandle)
+    if (auto const lib = ModulePlatformUtils::LoadDynamicLibrary(module_path))
     {
-        function = (CreateModule) GetProcAddress(moduleHandle, "CreateModule");
-
-        if (function != NULL)
+        if (auto const function = ModulePlatformUtils::GetModuleFactoryFn(*lib))
         {
             std::unique_ptr<ModuleInstance> module((*function)());
 
@@ -51,7 +39,8 @@ int main(int argc, char** argv)
         else
             std::cout << "function not found!";
 
-        fFreeResult = FreeLibrary(moduleHandle) ;
+        // No need to unload it, shared ptrs will take care of this.
+        // ModulePlatformUtils::UnloadDynamicLibrary(*lib);
     }
     else
         std::cout << "could not load library";

@@ -34,13 +34,21 @@ class ModuleInstance
 {
     std::shared_ptr<ModuleInterface> _ptr;
 
-    std::string const _name, _type, _version;
+    std::string _name, _type, _version;
 
     std::type_info const& _typeid;
 
 public:
-    ModuleInstance(std::string const& type, std::string const& name, std::string const& version, ModuleInterface* ptr)
-        : _ptr(ptr), _name(name), _type(type), _version(version), _typeid(typeid(*ptr)) { }
+    ModuleInstance(ModuleInterface* ptr, std::string const& type, std::string const& name, std::string const& version = "")
+        : _ptr(ptr), _type(type), _name(name), _version(version), _typeid(typeid(*ptr)) { }
+
+    ModuleInstance(ModuleInstance const&) = delete;
+
+    ModuleInstance(ModuleInstance&&) = delete;
+
+    ModuleInstance& operator=(ModuleInstance const&) = delete;
+
+    ModuleInstance& operator=(ModuleInstance&&) = delete;
 
     std::string const& GetName() const
     {
@@ -68,17 +76,48 @@ public:
 
     // Throws std::bad_cast exception on bad casts.
     template <class T>
-    T* GetInterface() const
+    std::shared_ptr<T> GetInterface() const
     {
         static_assert(std::is_convertible<T, ModuleInterface>::value,
             "Can't cast to interfaces which are not a child of ModuleInterface!");
 
-        T* ptr = dynamic_cast<T*>(_ptr.get());
-        if (ptr == nullptr)
-            throw std::bad_cast("Tried to cast to wrong interface!");
-        else
-            return ptr;
+        if (!IsInstanceOf<T>())
+           throw std::bad_cast("Tried to cast to wrong interface!");
+
+        return std::dynamic_pointer_cast<T>(_ptr);
     }
+};
+
+
+typedef std::function<ModuleInstance*()> CreateModuleFn;
+
+static std::string const CreateModuleFnName = "CreateModule";
+
+template<typename _RTy>
+struct unwrap_function;
+
+template<typename _RTy, typename... _ATy>
+struct unwrap_function < _RTy(_ATy...) >
+{
+    typedef _RTy return_type;
+
+    typedef std::tuple<_ATy...> argument_type;
+
+    typedef std::function<_RTy(_ATy...)> function_type;
+
+    typedef _RTy(*function_ptr)(_ATy...);
+};
+
+template<typename _RTy, typename... _ATy>
+struct unwrap_function < std::function<_RTy(_ATy...)> >
+{
+    typedef _RTy return_type;
+
+    typedef std::tuple<_ATy...> argument_type;
+
+    typedef std::function<_RTy(_ATy...)> function_type;
+
+    typedef _RTy(*function_ptr)(_ATy...);
 };
 
 #endif // Module_hpp_

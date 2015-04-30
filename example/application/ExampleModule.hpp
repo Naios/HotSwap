@@ -16,6 +16,10 @@ public:
 class BadExample : public ModuleInterface
 {
 public:
+    virtual std::string GetHey()
+    {
+        return "Bad Example!";
+    }
 };
 
 #endif // ExampleModule_hpp_
