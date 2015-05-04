@@ -9,7 +9,13 @@
 
 int main(int argc, char** argv)
 {
-    if (auto const templ = ModuleTemplateInstance::CreateFromPath("MyModule." + ModuleTemplateInstance::GetPlatformSpecificExtension()))
+    #ifdef _WIN32
+        std::string const name = "MyModule.dll";
+    #else // Posix
+        std::string const name = "libMyModule.so";
+    #endif
+
+    if (auto const templ = ModuleTemplateInstance::CreateFromPath(name))
     {
         auto ref = *templ;
 
