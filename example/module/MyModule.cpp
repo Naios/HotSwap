@@ -6,17 +6,27 @@
 
 class OtherExample : public Example
 {
-    std::string GetHey() override
+    std::string GetHey()
     {
         Log::instance().count();
-        return "huhu from overwritten!";
+        return "huhu from MyModule (it works)!";
+    }
+
+    std::string GetName() const
+    {
+        return "My example module";
+    }
+
+    std::string GetTypeId() const
+    {
+        return "My typeid";
     }
 };
 
 extern "C"
 {
-    MODULE_EXPORT ModuleInstance* CreateModule()
+    MODULE_EXPORT ModuleInterface* CreateModule()
     {
-        return new ModuleInstance(new OtherExample(), "TC:Script", "Some scripts", "");
+        return new OtherExample();
     }
 }

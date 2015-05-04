@@ -7,8 +7,10 @@
 #include <exception>
 #include <typeinfo>
 #include <type_traits>
+#include <utility>
 
 #include <boost/optional.hpp>
+// #include <boost/filesystem.hpp>
 
 #if defined(_MSC_VER)
     //  Microsoft
@@ -30,48 +32,38 @@ public:
     virtual ~ModuleInterface() { }
 };
 
+class ModuleInstance;
+class ModuleTemplateInstance;
+
+typedef std::shared_ptr<ModuleInstance const> Module;
+typedef std::shared_ptr<ModuleTemplateInstance const> ModuleTemplate;
+
 class ModuleInstance
+    : public std::enable_shared_from_this<ModuleInstance>
 {
-    std::shared_ptr<ModuleInterface> _ptr;
+    friend class ModuleTemplateInstance;
 
-    std::string _name, _type, _version;
+    std::shared_ptr<ModuleInterface> const _interface;
 
-    std::type_info const& _typeid;
+    ModuleTemplate const _moduleTemplate;
+
+    ModuleInstance(ModuleTemplate const moduleTemplate, ModuleInterface* interface) :
+        _moduleTemplate(moduleTemplate), _interface(interface) { }
 
 public:
-    ModuleInstance(ModuleInterface* ptr, std::string const& type, std::string const& name, std::string const& version = "")
-        : _ptr(ptr), _type(type), _name(name), _version(version), _typeid(typeid(*ptr)) { }
-
     ModuleInstance(ModuleInstance const&) = delete;
-
     ModuleInstance(ModuleInstance&&) = delete;
-
-    ModuleInstance& operator=(ModuleInstance const&) = delete;
-
-    ModuleInstance& operator=(ModuleInstance&&) = delete;
-
-    std::string const& GetName() const
-    {
-        return _name;
-    }
-
-    std::string const& GetType() const
-    {
-        return _type;
-    }
-
-    std::string GetTypeId() const
-    {
-        return _typeid.name();
-    }
+    ModuleInstance& operator= (ModuleInstance const&) = delete;
+    ModuleInstance& operator= (ModuleInstance&&) = delete;
 
     // Returns true if the interface is of type T
     template <class T>
-    bool IsInstanceOf() const
+    inline bool IsInstanceOf() const
     {
         static_assert(std::is_convertible<T, ModuleInterface>::value,
             "Parameter T needs to be child class of ModuleInterface!");
-        return (dynamic_cast<T*>(_ptr.get()) != nullptr);
+
+        return (dynamic_cast<T*>(_interface.get()) != nullptr);
     }
 
     // Throws std::bad_cast exception on bad casts.
@@ -84,40 +76,43 @@ public:
         if (!IsInstanceOf<T>())
            throw std::bad_cast("Tried to cast to wrong interface!");
 
-        return std::dynamic_pointer_cast<T>(_ptr);
+        return std::dynamic_pointer_cast<T>(_interface);
     }
 };
 
+typedef std::function<ModuleInterface*()> ModuleCreateFunction;
 
-typedef std::function<ModuleInstance*()> CreateModuleFn;
+static char const* const CREATE_MODULE_FUNCTION_NAME = "CreateModule";
 
-static std::string const CreateModuleFnName = "CreateModule";
-
-template<typename _RTy>
-struct unwrap_function;
-
-template<typename _RTy, typename... _ATy>
-struct unwrap_function < _RTy(_ATy...) >
+class ModuleTemplateInstance
+    : public std::enable_shared_from_this<ModuleTemplateInstance>
 {
-    typedef _RTy return_type;
+    typedef std::unique_ptr<void, void(*)(void*)> InternalHandleType;
 
-    typedef std::tuple<_ATy...> argument_type;
+    InternalHandleType const _handle;
 
-    typedef std::function<_RTy(_ATy...)> function_type;
+    ModuleCreateFunction const _function;
 
-    typedef _RTy(*function_ptr)(_ATy...);
-};
+    ModuleTemplateInstance(InternalHandleType&& handle, ModuleCreateFunction const& function)
+        : _handle(std::forward<InternalHandleType>(handle)), _function(function) { }
 
-template<typename _RTy, typename... _ATy>
-struct unwrap_function < std::function<_RTy(_ATy...)> >
-{
-    typedef _RTy return_type;
+public:
+    ~ModuleTemplateInstance() { }
 
-    typedef std::tuple<_ATy...> argument_type;
+    ModuleTemplateInstance(ModuleTemplateInstance const&) = delete;
+    ModuleTemplateInstance(ModuleTemplateInstance&&) = delete;
+    ModuleTemplateInstance& operator= (ModuleTemplateInstance const&) = delete;
+    ModuleTemplateInstance& operator= (ModuleTemplateInstance&&) = delete;
 
-    typedef std::function<_RTy(_ATy...)> function_type;
+    // Try to create a new module template from the given path.
+    // Returns an non empty optional on success.
+    static boost::optional<ModuleTemplate> CreateFrom(std::string const& path);
 
-    typedef _RTy(*function_ptr)(_ATy...);
+    // Returns "dll" on windows or "so" on posix.
+    static std::string const& GetPlatformSpecificExtension();
+
+    // Create a new instance of the module.
+    Module CreateInstance() const;
 };
 
 #endif // Module_hpp_
