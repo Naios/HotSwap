@@ -74,7 +74,7 @@ public:
             "Can't cast to interfaces which are not a child of ModuleInterface!");
 
         if (!IsInstanceOf<T>())
-           throw std::bad_cast("Tried to cast to wrong interface!");
+           throw std::bad_cast();
 
         return std::dynamic_pointer_cast<T>(_interface);
     }

@@ -51,4 +51,17 @@ boost::optional<ModuleTemplate> ModuleTemplateInstance::CreateFromPath(std::stri
 #else
 // Posix
 
+
+std::string const& ModuleTemplateInstance::GetPlatformSpecificExtension()
+{
+    static std::string const extension = "so";
+    return extension;
+}
+
+boost::optional<ModuleTemplate> ModuleTemplateInstance::CreateFromPath(std::string const& path)
+{
+    // TODO
+    return boost::make_optional(nullptr);
+}
+
 #endif
