@@ -47,8 +47,8 @@ class ModuleInstance
 
     ModuleTemplate const _moduleTemplate;
 
-    ModuleInstance(ModuleTemplate const moduleTemplate, ModuleInterface* interface) :
-        _moduleTemplate(moduleTemplate), _interface(interface) { }
+    ModuleInstance(ModuleTemplate const moduleTemplate, ModuleInterface* moduleInterface) :
+        _moduleTemplate(moduleTemplate), _interface(moduleInterface) { }
 
 public:
     ModuleInstance(ModuleInstance const&) = delete;

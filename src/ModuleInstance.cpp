@@ -1,5 +1,9 @@
 
-#include <iostream>
+#ifdef _WIN32
+    #include <windows.h>
+#else // Posix
+    #include <dlfcn.h>
+#endif
 
 #include "ModuleInstance.hpp"
 
@@ -17,25 +21,40 @@ Module ModuleTemplateInstance::CreateInstance() const
     return Module(new ModuleInstance(shared_from_this(), _function()));
 }
 
-#ifdef _WIN32
-// Windows
-
-#include <windows.h>
-
 std::string const& ModuleTemplateInstance::GetPlatformSpecificExtension()
 {
-    static std::string const extension = "dll";
+    #ifdef _WIN32
+        static std::string const extension = "dll";
+    #else // Posix
+        static std::string const extension = "so";
+    #endif
+
     return extension;
 }
 
 boost::optional<ModuleTemplate> ModuleTemplateInstance::CreateFromPath(std::string const& path)
 {
-    HMODULE syshandle = LoadLibrary(path.c_str());
+    #ifdef _WIN32
+        HMODULE syshandle = LoadLibrary(path.c_str());
+    #else // Posix
+        void* syshandle = dlopen(path.c_str(), RTLD_LAZY);
+    #endif
+
     if (!syshandle)
         return boost::none;
 
-    ModuleCreateFunction const function =
-        (unwrap_function<ModuleCreateFunction>::function_ptr)GetProcAddress(syshandle, CREATE_MODULE_FUNCTION_NAME);
+    #ifdef _WIN32
+        unwrap_function<ModuleCreateFunction>::function_ptr const function =
+            (unwrap_function<ModuleCreateFunction>::function_ptr)GetProcAddress(syshandle, CREATE_MODULE_FUNCTION_NAME);
+
+    #else // Posix
+
+        // Silences "warning: dereferencing type-punned pointer will break strict-aliasing rules" warnings according to:
+        // http://en.wikipedia.org/wiki/Dynamic_loading
+        union { unwrap_function<ModuleCreateFunction>::function_ptr function; void* raw; } alias;
+        alias.raw = dlsym(syshandle, CREATE_MODULE_FUNCTION_NAME);
+        unwrap_function<ModuleCreateFunction>::function_ptr function = alias.function;
+    #endif
 
     if (!function)
         return boost::none;
@@ -43,25 +62,11 @@ boost::optional<ModuleTemplate> ModuleTemplateInstance::CreateFromPath(std::stri
     return boost::make_optional(ModuleTemplate(
         new ModuleTemplateInstance(InternalHandleType(syshandle, [](void* handle)
         {
-            FreeLibrary((HMODULE)handle);
+            #ifdef _WIN32
+                FreeLibrary((HMODULE)handle);
+            #else // Posix
+                dlclose(handle);
+            #endif
         }),
-        function)));
+        ModuleCreateFunction(function))));
 }
-
-#else
-// Posix
-
-
-std::string const& ModuleTemplateInstance::GetPlatformSpecificExtension()
-{
-    static std::string const extension = "so";
-    return extension;
-}
-
-boost::optional<ModuleTemplate> ModuleTemplateInstance::CreateFromPath(std::string const& path)
-{
-    // TODO
-    return boost::make_optional(nullptr);
-}
-
-#endif
