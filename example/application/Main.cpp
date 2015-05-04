@@ -9,7 +9,7 @@
 
 int main(int argc, char** argv)
 {
-    if (auto const templ = ModuleTemplateInstance::CreateFrom("MyModule." + ModuleTemplateInstance::GetPlatformSpecificExtension()))
+    if (auto const templ = ModuleTemplateInstance::CreateFromPath("MyModule." + ModuleTemplateInstance::GetPlatformSpecificExtension()))
     {
         auto ref = *templ;
 

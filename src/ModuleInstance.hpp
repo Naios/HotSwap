@@ -106,7 +106,7 @@ public:
 
     // Try to create a new module template from the given path.
     // Returns an non empty optional on success.
-    static boost::optional<ModuleTemplate> CreateFrom(std::string const& path);
+    static boost::optional<ModuleTemplate> CreateFromPath(std::string const& path);
 
     // Returns "dll" on windows or "so" on posix.
     static std::string const& GetPlatformSpecificExtension();

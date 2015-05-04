@@ -28,7 +28,7 @@ std::string const& ModuleTemplateInstance::GetPlatformSpecificExtension()
     return extension;
 }
 
-boost::optional<ModuleTemplate> ModuleTemplateInstance::CreateFrom(std::string const& path)
+boost::optional<ModuleTemplate> ModuleTemplateInstance::CreateFromPath(std::string const& path)
 {
     HMODULE syshandle = LoadLibrary(path.c_str());
     if (!syshandle)
@@ -43,7 +43,6 @@ boost::optional<ModuleTemplate> ModuleTemplateInstance::CreateFrom(std::string c
     return boost::make_optional(ModuleTemplate(
         new ModuleTemplateInstance(InternalHandleType(syshandle, [](void* handle)
         {
-            std::cout << "Freeing..." << std::endl;
             FreeLibrary((HMODULE)handle);
         }),
         function)));
