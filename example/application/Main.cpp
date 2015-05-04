@@ -27,6 +27,11 @@ int main(int argc, char** argv)
 
         std::cout << "Used " << ref.use_count() << std::endl;
     }
+    else
+    {
+        std::cout << "ModuleTemplateInstance::CreateFromPath(name) errored! Used " << name << std::endl;
+        return 1;
+    }
 
     return 0;
 }
