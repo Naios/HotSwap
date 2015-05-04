@@ -1,5 +1,5 @@
 
-#include "ModuleInstance.hpp"
+#include "ModuleInterface.hpp"
 
 #include "ExampleModule.hpp"
 #include "ExampleSingleton.hpp"

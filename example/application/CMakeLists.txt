@@ -8,7 +8,7 @@ add_executable(Application ${Application_SRC})
 
 target_link_libraries(Application
   HotSwap
-#  ${Boost_LIBRARIES}
+  ${Boost_LIBRARIES}
 )
 
 if( UNIX )

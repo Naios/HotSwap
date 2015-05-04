@@ -1,11 +1,11 @@
 
 #include <iostream>
 
-// #include <boost/filesystem.hpp>
-
-#include "ModuleInstance.hpp"
+#include "Module.hpp"
 #include "ExampleModule.hpp"
 #include "ExampleSingleton.hpp"
+
+#include <boost/filesystem/path.hpp>
 
 int main(int argc, char** argv)
 {

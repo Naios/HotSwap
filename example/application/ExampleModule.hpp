@@ -2,7 +2,9 @@
 #ifndef ExampleModule_hpp_
 #define ExampleModule_hpp_
 
-#include "ModuleInstance.hpp"
+#include <string>
+
+#include "ModuleInterface.hpp"
 
 class Example : public ModuleInterface
 {

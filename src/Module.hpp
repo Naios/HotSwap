@@ -6,31 +6,12 @@
 #include <memory>
 #include <exception>
 #include <typeinfo>
-#include <type_traits>
 #include <utility>
 
 #include <boost/optional.hpp>
-// #include <boost/filesystem.hpp>
+#include <boost/filesystem/path.hpp>
 
-#if defined(_MSC_VER)
-    //  Microsoft
-    #define MODULE_EXPORT __declspec(dllexport)
-#elif defined(_GCC)
-    //  GCC
-    #define MODULE_EXPORT __attribute__((visibility("default")))
-#else
-    //  do nothing and hope for the best?
-    #define MODULE_EXPORT
-    #pragma warning Unknown dynamic link import/export semantics.
-#endif
-
-// Module interface base class
-// Ensures that there are runtime infos generated for our child classes.
-class ModuleInterface
-{
-public:
-    virtual ~ModuleInterface() { }
-};
+#include "ModuleInterface.hpp"
 
 class ModuleInstance;
 class ModuleTemplateInstance;
@@ -78,6 +59,11 @@ public:
 
         return std::dynamic_pointer_cast<T>(_interface);
     }
+
+    inline ModuleTemplate GetTemplate() const
+    {
+        return _moduleTemplate;
+    }
 };
 
 typedef std::function<ModuleInterface*()> ModuleCreateFunction;
@@ -106,7 +92,7 @@ public:
 
     // Try to create a new module template from the given path.
     // Returns an non empty optional on success.
-    static boost::optional<ModuleTemplate> CreateFromPath(std::string const& path);
+    static boost::optional<ModuleTemplate> CreateFromPath(boost::filesystem::path const& path);
 
     // Returns "dll" on windows or "so" on posix.
     static std::string const& GetPlatformSpecificExtension();

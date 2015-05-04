@@ -5,7 +5,7 @@
     #include <dlfcn.h>
 #endif
 
-#include "ModuleInstance.hpp"
+#include "Module.hpp"
 
 template<typename _RTy>
 struct unwrap_function;
@@ -32,12 +32,12 @@ std::string const& ModuleTemplateInstance::GetPlatformSpecificExtension()
     return extension;
 }
 
-boost::optional<ModuleTemplate> ModuleTemplateInstance::CreateFromPath(std::string const& path)
+boost::optional<ModuleTemplate> ModuleTemplateInstance::CreateFromPath(boost::filesystem::path const& path)
 {
     #ifdef _WIN32
-        HMODULE syshandle = LoadLibrary(path.c_str());
+        HMODULE syshandle = LoadLibrary(path.generic_string().c_str());
     #else // Posix
-        void* syshandle = dlopen(path.c_str(), RTLD_LAZY);
+        void* syshandle = dlopen(path.generic_string().c_str(), RTLD_LAZY);
     #endif
 
     if (!syshandle)
