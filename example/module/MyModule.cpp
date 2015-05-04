@@ -23,10 +23,4 @@ class OtherExample : public Example
     }
 };
 
-extern "C"
-{
-    MODULE_EXPORT ModuleInterface* CreateModule()
-    {
-        return new OtherExample();
-    }
-}
+DEFINE_MODULE(OtherExample)

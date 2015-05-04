@@ -21,4 +21,14 @@ public:
     virtual ~ModuleInterface() { }
 };
 
+// Defines an exported module
+#define DEFINE_MODULE(MODULE_NAME) \
+    extern "C" \
+    { \
+        MODULE_EXPORT ModuleInterface* CreateModule() \
+        { \
+            return new MODULE_NAME(); \
+        } \
+    }
+
 #endif // ModuleInterface_hpp_
