@@ -5,8 +5,6 @@
     #include <dlfcn.h>
 #endif
 
-#include <iostream>
-
 #include "ModuleInstance.hpp"
 
 template<typename _RTy>
@@ -45,8 +43,6 @@ boost::optional<ModuleTemplate> ModuleTemplateInstance::CreateFromPath(std::stri
     if (!syshandle)
         return boost::none;
 
-    std::cout << "Loaded library " << path << std::endl;
-
     #ifdef _WIN32
         unwrap_function<ModuleCreateFunction>::function_ptr const function =
             (unwrap_function<ModuleCreateFunction>::function_ptr)GetProcAddress(syshandle, CREATE_MODULE_FUNCTION_NAME);
@@ -55,19 +51,13 @@ boost::optional<ModuleTemplate> ModuleTemplateInstance::CreateFromPath(std::stri
 
         // Silences "warning: dereferencing type-punned pointer will break strict-aliasing rules" warnings according to:
         // http://en.wikipedia.org/wiki/Dynamic_loading
-        // union { unwrap_function<ModuleCreateFunction>::function_ptr function; void* raw; } alias;
-        // alias.raw = dlsym(syshandle, CREATE_MODULE_FUNCTION_NAME);
-        // unwrap_function<ModuleCreateFunction>::function_ptr function = alias.function;
-
-        unwrap_function<ModuleCreateFunction>::function_ptr const function =
-            (unwrap_function<ModuleCreateFunction>::function_ptr)dlsym(syshandle, CREATE_MODULE_FUNCTION_NAME);
-
+        union { unwrap_function<ModuleCreateFunction>::function_ptr function; void* raw; } alias;
+        alias.raw = dlsym(syshandle, CREATE_MODULE_FUNCTION_NAME);
+        unwrap_function<ModuleCreateFunction>::function_ptr function = alias.function;
     #endif
 
     if (!function)
         return boost::none;
-
-    std::cout << "Found function " << std::endl;
 
     return boost::make_optional(ModuleTemplate(
         new ModuleTemplateInstance(InternalHandleType(syshandle, [](void* handle)
