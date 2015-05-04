@@ -10,3 +10,9 @@ target_link_libraries(Application
   HotSwap
 #  ${Boost_LIBRARIES}
 )
+
+if( UNIX )
+  install(TARGETS Application DESTINATION bin)
+elseif( WIN32 )
+  install(TARGETS Application DESTINATION "${CMAKE_INSTALL_PREFIX}")
+endif()

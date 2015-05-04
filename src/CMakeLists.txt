@@ -5,6 +5,6 @@ add_library(HotSwap STATIC ${HotSwap_SRC})
 #  ${Boost_LIBRARIES}
 #)
 
-if (${UNIX})
-    target_link_libraries(HotSwap dl)
+if ( UNIX )
+  target_link_libraries(HotSwap dl)
 endif()

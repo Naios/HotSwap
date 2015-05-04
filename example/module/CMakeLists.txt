@@ -6,3 +6,9 @@ include_directories(
 )
 
 add_library(MyModule SHARED ${SRC})
+
+if( UNIX )
+  install(TARGETS MyModule DESTINATION bin)
+elseif( WIN32 )
+  install(TARGETS MyModule DESTINATION "${CMAKE_INSTALL_PREFIX}")
+endif()
