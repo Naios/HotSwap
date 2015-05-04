@@ -9,6 +9,8 @@
 
 int main(int argc, char** argv)
 {
+    std::cout << "Hot Swap example application..." << std::endl;
+
     #ifdef _WIN32
         std::string const name = "MyModule.dll";
     #else // Posix
