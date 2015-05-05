@@ -6,10 +6,18 @@ include_directories(
 
 add_executable(Application ${Application_SRC})
 
-target_link_libraries(Application
-  HotSwap
-  ${Boost_LIBRARIES}
-)
+if ( UNIX )
+  target_link_libraries(Application
+    ${Boost_LIBRARIES}
+    HotSwap
+    dl
+  )
+else()
+  target_link_libraries(Application
+    ${Boost_LIBRARIES}
+    HotSwap
+  )
+endif()
 
 if( UNIX )
   install(TARGETS Application DESTINATION bin)

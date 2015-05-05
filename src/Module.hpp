@@ -9,7 +9,7 @@
 #include <utility>
 
 #include <boost/optional.hpp>
-#include <boost/filesystem/path.hpp>
+#include <boost/filesystem.hpp>
 
 #include "ModuleInterface.hpp"
 

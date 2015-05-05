@@ -5,7 +5,7 @@
 #include "ExampleModule.hpp"
 #include "ExampleSingleton.hpp"
 
-#include <boost/filesystem/path.hpp>
+#include <boost/filesystem.hpp>
 
 int main(int argc, char** argv)
 {

@@ -43,6 +43,15 @@ boost::optional<ModuleTemplate> ModuleTemplateInstance::CreateFromPath(boost::fi
     if (!syshandle)
         return boost::none;
 
+    InternalHandleType handle(syshandle, [](void* handle)
+    {
+        #ifdef _WIN32
+            FreeLibrary((HMODULE)handle);
+        #else // Posix
+            dlclose(handle);
+        #endif
+    });
+
     #ifdef _WIN32
         unwrap_function<ModuleCreateFunction>::function_ptr const function =
             (unwrap_function<ModuleCreateFunction>::function_ptr)GetProcAddress(syshandle, CREATE_MODULE_FUNCTION_NAME);
@@ -60,13 +69,5 @@ boost::optional<ModuleTemplate> ModuleTemplateInstance::CreateFromPath(boost::fi
         return boost::none;
 
     return boost::make_optional(ModuleTemplate(
-        new ModuleTemplateInstance(InternalHandleType(syshandle, [](void* handle)
-        {
-            #ifdef _WIN32
-                FreeLibrary((HMODULE)handle);
-            #else // Posix
-                dlclose(handle);
-            #endif
-        }),
-        ModuleCreateFunction(function))));
+        new ModuleTemplateInstance(std::move(handle), function)));
 }
