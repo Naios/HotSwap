@@ -2,8 +2,6 @@
 #ifndef ExampleSingleton_hpp_
 #define ExampleSingleton_hpp_
 
-#include "Module.hpp"
-
 #include <mutex>
 #include <iostream>
 
