@@ -4,13 +4,28 @@
 
 #if defined(_MSC_VER)
     //  Microsoft
-    #define MODULE_EXPORT __declspec(dllexport)
+    #define DECL_EXPORT __declspec(dllexport)
 #elif defined(_GCC)
     //  GCC
-    #define MODULE_EXPORT __attribute__((visibility("default")))
+    #define DECL_EXPORT __attribute__((visibility("default")))
 #else
-    #define MODULE_EXPORT
+    #define DECL_EXPORT
     #pragma warning Unknown dynamic link import/export semantics.
+#endif
+
+#if defined(_MSC_VER)
+//  Microsoft
+#define DECL_IMPORT __declspec(dllimport)
+#elif defined(_GCC)
+
+#else
+
+#endif
+
+#ifdef DLL_EXPORT
+#define MODULE_EXPORT DECL_EXPORT
+#else
+#define MODULE_EXPORT DECL_IMPORT 
 #endif
 
 // Module interface base class
@@ -25,7 +40,7 @@ public:
 #define DEFINE_MODULE(MODULE_NAME) \
     extern "C" \
     { \
-        MODULE_EXPORT ModuleInterface* CreateModule() \
+        DECL_EXPORT ModuleInterface* CreateModule() \
         { \
             return new MODULE_NAME(); \
         } \

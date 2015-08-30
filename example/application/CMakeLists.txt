@@ -9,6 +9,7 @@ add_executable(Application ${Application_SRC})
 target_link_libraries(Application
   ${Boost_LIBRARIES}
   HotSwap
+  Singleton
 )
 
 if( UNIX )

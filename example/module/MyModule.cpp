@@ -1,4 +1,6 @@
 
+#define DECL_IN_MODULE 1
+
 #include "ModuleInterface.hpp"
 
 #include "ExampleModule.hpp"
@@ -8,7 +10,7 @@ class OtherExample : public Example
 {
     std::string GetHey()
     {
-        Log::instance().count();
+        GetLogSingleton()->count();
         return "huhu from MyModule (it works)!";
     }
 

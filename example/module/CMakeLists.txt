@@ -7,6 +7,10 @@ include_directories(
 
 add_library(MyModule SHARED ${SRC})
 
+target_link_libraries(MyModule
+  Singleton
+)
+
 if( UNIX )
   install(TARGETS MyModule DESTINATION bin)
 elseif( WIN32 )
