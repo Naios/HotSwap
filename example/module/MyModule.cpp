@@ -6,8 +6,28 @@
 #include "ExampleModule.hpp"
 #include "ExampleSingleton.hpp"
 
+class MyAI : public UnitAI
+{
+public:
+    virtual ~MyAI()
+    {
+        std::cout << "Destroy ~MyAI" << std::endl;
+    }
+
+    void Greet() override
+    {
+        std::cout << "Greetings from MyAI" << std::endl;
+    }
+};
+
 class OtherExample : public Example
 {
+public:
+    virtual ~OtherExample()
+    {
+        std::cout << "Destroy ~OtherExample" << std::endl;
+    }
+
     std::string GetHey()
     {
         GetLogSingleton()->count();
@@ -22,6 +42,11 @@ class OtherExample : public Example
     std::string GetTypeId() const
     {
         return "My typeid";
+    }
+
+    UnitAI* create() override
+    {
+        return new MyAI();
     }
 };
 

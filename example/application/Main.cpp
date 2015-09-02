@@ -27,7 +27,19 @@ int main(int argc, char** argv)
         if (!instance->IsInstanceOf<Example>())
             std::cout << "Not example interface!" << std::endl;
         else
+        {
             std::cout << instance->GetInterface<Example>()->GetHey() << std::endl;
+
+            std::cout << "Creating AI..." << std::endl;
+
+            UnitAI* ai = instance->GetInterface<Example>()->create();
+
+            ai->Greet();
+
+            delete ai;
+
+            std::cout << "deleted AI" << std::endl;
+        }
 
         std::cout << "Used " << ref.use_count() << std::endl;
     }
@@ -36,6 +48,8 @@ int main(int argc, char** argv)
         std::cout << "ModuleTemplateInstance::CreateFromPath(name) errored! Used " << name << std::endl;
         return 1;
     }
+
+    std::cout << "unloaded" << std::endl;
 
     return 0;
 }

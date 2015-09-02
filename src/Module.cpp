@@ -32,6 +32,20 @@ std::string const& ModuleTemplateInstance::GetPlatformSpecificExtension()
     return extension;
 }
 
+/*
+class ModuleReference
+{
+public:
+    virtual ~ModuleReference() { }
+
+    virtual bool LoadFromFile() = 0;
+
+    virtual bool IsLoaded() const = 0;
+
+    virtual bool Unload() const = 0;
+};
+*/
+
 boost::optional<ModuleTemplate> ModuleTemplateInstance::CreateFromPath(boost::filesystem::path const& path)
 {
     #ifdef _WIN32

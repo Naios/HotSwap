@@ -37,30 +37,25 @@ public:
     ModuleInstance& operator= (ModuleInstance const&) = delete;
     ModuleInstance& operator= (ModuleInstance&&) = delete;
 
-    // Returns true if the interface is of type T
-    template <class T>
-    inline bool IsInstanceOf() const
+    /// Returns true if the interface is of type T
+    template <typename T>
+    bool IsInstanceOf() const
     {
-        static_assert(std::is_convertible<T, ModuleInterface>::value,
-            "Parameter T needs to be child class of ModuleInterface!");
-
-        return (dynamic_cast<T*>(_interface.get()) != nullptr);
+        return (dynamic_cast<typename std::decay<T>::type*>(_interface.get()) != nullptr);
     }
 
-    // Throws std::bad_cast exception on bad casts.
-    template <class T>
+    /// Throws std::bad_cast exception on bad casts.
+    template <typename T>
     std::shared_ptr<T> GetInterface() const
     {
-        static_assert(std::is_convertible<T, ModuleInterface>::value,
-            "Can't cast to interfaces which are not a child of ModuleInterface!");
-
         if (!IsInstanceOf<T>())
            throw std::bad_cast();
 
-        return std::dynamic_pointer_cast<T>(_interface);
+        return std::dynamic_pointer_cast<typename std::decay<T>::type>(_interface);
     }
 
-    inline ModuleTemplate GetTemplate() const
+    /// Returns the associated ModuleTemplate
+    ModuleTemplate GetTemplate() const
     {
         return _moduleTemplate;
     }
