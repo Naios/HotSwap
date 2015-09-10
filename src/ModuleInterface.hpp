@@ -5,12 +5,9 @@
 #if defined(_MSC_VER)
     //  Microsoft
     #define DECL_EXPORT __declspec(dllexport)
-#elif defined(_GCC)
+#else
     //  GCC
     #define DECL_EXPORT __attribute__((visibility("default")))
-#else
-    #define DECL_EXPORT
-    #pragma warning Unknown dynamic link import/export semantics.
 #endif
 
 #if defined(_MSC_VER)
