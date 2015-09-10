@@ -28,12 +28,14 @@ int main(int argc, char** argv)
             std::cout << "Not example interface!" << std::endl;
         else
         {
+            ObjectMgr::instance()->print();
+
             std::cout << instance->GetInterface<Example>()->GetHey() << std::endl;
 
             std::cout << "Creating AI..." << std::endl;
 
             UnitAI* ai = instance->GetInterface<Example>()->create();
-
+            ObjectMgr::instance()->print();
             ai->Greet();
 
             delete ai;

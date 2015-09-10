@@ -16,6 +16,7 @@ public:
 
     void Greet() override
     {
+        ObjectMgr::instance()->print();
         std::cout << "Greetings from MyAI" << std::endl;
     }
 };
@@ -30,6 +31,7 @@ public:
 
     std::string GetHey()
     {
+        ObjectMgr::instance()->print();
         GetLogSingleton()->count();
         return "huhu from MyModule (it works)!";
     }

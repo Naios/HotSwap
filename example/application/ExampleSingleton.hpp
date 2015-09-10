@@ -21,6 +21,34 @@ public:
     }
 };
 
+template<typename T>
+class Singleton
+{
+public:
+    Singleton() = default;
+    Singleton(Singleton const&) = delete;
+    Singleton(Singleton&&) = delete;
+    Singleton& operator= (Singleton const&) = delete;
+    Singleton& operator= (Singleton&&) = delete;
+
+    static T* instance()
+    {
+        static T _instance;
+        return &_instance;
+    }
+};
+
+class MODULE_EXPORT ObjectMgr
+    : public Singleton<ObjectMgr>
+{
+    int i;
+
+public:
+    ObjectMgr() : i(0) { }
+
+    void print();
+};
+
 MODULE_EXPORT Log* GetLogSingleton();
 
 #endif // ExampleSingleton_hpp_
