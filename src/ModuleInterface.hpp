@@ -3,20 +3,15 @@
 #define ModuleInterface_hpp_
 
 #if defined(_MSC_VER)
-    //  Microsoft
     #define DECL_EXPORT __declspec(dllexport)
 #else
-    //  GCC
     #define DECL_EXPORT __attribute__((visibility("default")))
 #endif
 
 #if defined(_MSC_VER)
-//  Microsoft
-#define DECL_IMPORT __declspec(dllimport)
-#elif defined(_GCC)
-
+    #define DECL_IMPORT __declspec(dllimport)
 #else
-
+    #define DECL_IMPORT
 #endif
 
 #ifdef DLL_EXPORT
