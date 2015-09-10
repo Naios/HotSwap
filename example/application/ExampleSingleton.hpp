@@ -39,12 +39,21 @@ public:
 };
 
 class MODULE_EXPORT ObjectMgr
-    : public Singleton<ObjectMgr>
 {
     int i;
 
 public:
     ObjectMgr() : i(0) { }
+    ObjectMgr(ObjectMgr const&) = delete;
+    ObjectMgr(ObjectMgr&&) = delete;
+    ObjectMgr& operator= (ObjectMgr const&) = delete;
+    ObjectMgr& operator= (ObjectMgr&&) = delete;
+
+    static ObjectMgr* instance()
+    {
+        static ObjectMgr _instance;
+        return &_instance;
+    }
 
     void print();
 };
