@@ -14,7 +14,10 @@ target_link_libraries(MyModule
 )
 
 if( UNIX )
-  install(TARGETS MyModule DESTINATION bin)
+  install(TARGETS MyModule
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+  )
 elseif( WIN32 )
   install(TARGETS MyModule DESTINATION "${CMAKE_INSTALL_PREFIX}")
 endif()
