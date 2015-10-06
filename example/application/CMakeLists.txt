@@ -15,7 +15,7 @@ target_link_libraries(Application
 )
 
 if( UNIX )
-  install(TARGETS Application DESTINATION bin)
+  install(TARGETS Application DESTINATION lib)
 elseif( WIN32 )
   install(TARGETS Application DESTINATION "${CMAKE_INSTALL_PREFIX}")
 endif()
