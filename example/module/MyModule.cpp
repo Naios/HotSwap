@@ -5,18 +5,24 @@
 
 #include "ExampleModule.hpp"
 #include "ExampleSingleton.hpp"
+#include "MyDependency.hpp"
 
 class MyAI : public UnitAI
 {
 public:
     virtual ~MyAI()
     {
+        PRINT_MY_DEPENDENCY_COUNTER;
+
         std::cout << "Destroy ~MyAI" << std::endl;
     }
 
     void Greet() override
     {
         ObjectMgr::instance()->print();
+
+        PRINT_MY_DEPENDENCY_COUNTER;
+
         std::cout << "Greetings from MyAI" << std::endl;
     }
 };

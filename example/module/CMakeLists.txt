@@ -2,6 +2,7 @@ file(GLOB_RECURSE SRC *.cpp *.h *.hpp)
 
 include_directories(
   ${CMAKE_SOURCE_DIR}/example/application
+  ${CMAKE_SOURCE_DIR}/example/dependency
   ${CMAKE_SOURCE_DIR}/src
 )
 
@@ -9,6 +10,7 @@ add_library(MyModule SHARED ${SRC})
 
 target_link_libraries(MyModule
   Singleton
+  MyDependency
 )
 
 if( UNIX )

@@ -4,13 +4,14 @@
 #include "Module.hpp"
 #include "ExampleModule.hpp"
 #include "ExampleSingleton.hpp"
+#include "MyDependency.hpp"
 
 #include <boost/filesystem.hpp>
 
-int main(int argc, char** argv)
+int main(int /*argc*/, char** /*argv*/)
 {
     std::cout << "Hot Swap example application..." << std::endl;
-
+    PRINT_MY_DEPENDENCY_COUNTER;
     GetLogSingleton()->count();
 
     #ifdef _WIN32
