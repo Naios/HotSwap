@@ -1,5 +1,10 @@
 project(HotSwap CXX)
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.0)
+
+set(CMAKE_SKIP_BUILD_RPATH 0)
+set(CMAKE_BUILD_WITH_INSTALL_RPATH 0)
+set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH 1)
 
 include(CheckCXXCompilerFlag)
 include(CheckCXXSourceRuns)

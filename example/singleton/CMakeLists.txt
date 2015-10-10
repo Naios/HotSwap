@@ -13,10 +13,7 @@ target_link_libraries(Singleton
 )
 
 if( UNIX )
-  install(TARGETS Singleton
-        RUNTIME DESTINATION bin
-        LIBRARY DESTINATION lib
-  )
+  install(TARGETS Singleton DESTINATION lib)
 elseif( WIN32 )
   install(TARGETS Singleton DESTINATION "${CMAKE_INSTALL_PREFIX}")
 endif()

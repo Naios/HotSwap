@@ -8,10 +8,7 @@ include_directories(
 add_library(MyDependency SHARED ${SRC})
 
 if( UNIX )
-  install(TARGETS MyDependency
-        RUNTIME DESTINATION bin
-        LIBRARY DESTINATION lib
-  )
+  install(TARGETS MyDependency DESTINATION lib)
 elseif( WIN32 )
   install(TARGETS MyDependency DESTINATION "${CMAKE_INSTALL_PREFIX}")
 endif()
